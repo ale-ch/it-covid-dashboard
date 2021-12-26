@@ -8,25 +8,12 @@ df <- read.csv(url(url)) %>%
   select(-c(2, 12, 13, 16:24)) %>% 
   mutate(data = ymd_hms(data))
 
-#### nuove variabili ####
-
-# numero di test svolti giornalmente
-nuovi_tamponi <- diff(df$tamponi, 1)
-nuovi_tamponi <- c(df$tamponi[1], nuovi_tamponi)
-
-# tasso Rt giornaliero
-Rt <- vector("numeric", nrow(df))
-Rt[1] <- NA
-for(i in 2:nrow(df)) {
-  Rt[i] <- df[i, "nuovi_positivi"] / df[i-1, "nuovi_positivi"]
-}
-
 #### sovrascrivi dataset ####
 df <- df %>% 
   mutate(
-    nuovi_tamponi = nuovi_tamponi,
+    nuovi_tamponi = c(tamponi[1], diff(tamponi, 1)),
     ratio_positivi_tamponi = (nuovi_positivi / nuovi_tamponi),
-    Rt = Rt)
+    Rt = lag(lead(df$nuovi_positivi)) / lag(df$nuovi_positivi))
 
-rm(list = c("i", "Rt", "url", "nuovi_tamponi"))
+rm(list = url)
 
