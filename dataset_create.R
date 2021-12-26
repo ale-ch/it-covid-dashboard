@@ -9,12 +9,12 @@ df <- read.csv(url(url)) %>%
   mutate(data = ymd_hms(data))
 
 #### nuove variabili ####
-variazione_tamponi <- vector("numeric", nrow(df))
-variazione_tamponi[1] <- df[1, "tamponi"]
-for(i in 2:nrow(df)) {
-  variazione_tamponi[i] <- df[i, "tamponi"] - df[i-1, "tamponi"]
-}
 
+# numero di test svolti giornalmente
+nuovi_tamponi <- diff(df$tamponi, 1)
+nuovi_tamponi <- c(df$tamponi[1], nuovi_tamponi)
+
+# tasso Rt giornaliero
 Rt <- vector("numeric", nrow(df))
 Rt[1] <- NA
 for(i in 2:nrow(df)) {
