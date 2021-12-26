@@ -16,10 +16,10 @@ df_regioni <- read.csv(url(url)) %>%
   mutate(
     nuovi_tamponi = c(tamponi[1], diff(tamponi)),
     ratio_positivi_tamponi = (nuovi_positivi / nuovi_tamponi),
-    Rt = lag(lead(nuovi_positivi)) / lag(nuovi_positivi)
-  ) %>% 
+    Rt = lag(lead(nuovi_positivi)) / lag(nuovi_positivi)) %>% 
   ungroup() 
 
+rm(url)
 
 
 
