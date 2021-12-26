@@ -24,9 +24,9 @@ for(i in 2:nrow(df)) {
 #### sovrascrivi dataset ####
 df <- df %>% 
   mutate(
-    variazione_tamponi = variazione_tamponi,
-    ratio_positivi_tamponi = (nuovi_positivi / variazione_tamponi),
+    nuovi_tamponi = nuovi_tamponi,
+    ratio_positivi_tamponi = (nuovi_positivi / nuovi_tamponi),
     Rt = Rt)
 
-rm(list = c("i", "Rt", "url", "variazione_tamponi"))
+rm(list = c("i", "Rt", "url", "nuovi_tamponi"))
 
