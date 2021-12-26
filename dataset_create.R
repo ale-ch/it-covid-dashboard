@@ -13,7 +13,7 @@ df <- df %>%
   mutate(
     nuovi_tamponi = c(tamponi[1], diff(tamponi, 1)),
     ratio_positivi_tamponi = (nuovi_positivi / nuovi_tamponi),
-    Rt = lag(lead(df$nuovi_positivi)) / lag(df$nuovi_positivi))
+    Rt = lag(lead(nuovi_positivi)) / lag(nuovi_positivi))
 
 rm(list = url)
 
