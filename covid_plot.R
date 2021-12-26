@@ -1,6 +1,5 @@
-covid_plot <- function(df = data.frame(), last_n_days = double(), 
-                       var = character(), variazione = boolean(),
-                       percentuale = boolean()) {
+covid_plot <- function(last_n_days = double(), var = character(), 
+                       variazione = boolean(), percentuale = boolean()) {
   library(dplyr)
   library(ggplot2)
   library(lubridate)
