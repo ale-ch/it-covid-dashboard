@@ -1,5 +1,6 @@
-covid_plot <- function(last_n_days = double(), var = character(), 
-                       variazione = boolean(), percentuale = boolean()) {
+covid_plot <- function(df = list(), last_n_days = double(), 
+                       var = character(), variazione = boolean(),
+                       percentuale = boolean(), regione = "Nazionale") {
   library(dplyr)
   library(ggplot2)
   library(lubridate)
@@ -14,27 +15,30 @@ covid_plot <- function(last_n_days = double(), var = character(),
   
   #### plotting ####
   name <- var
-  var <- unlist(unname(df[var]))
+  var <- unlist(unname(df[name]))
+  
+  df <- df %>% 
+    mutate(var = var)
   
   # show variation: yes/no 
   if(variazione == TRUE) {
-    delta <- vector("numeric", nrow(df))
-    delta[1] <- df[1, name]
-    for(i in 2:nrow(df)) {
-      delta[i] <- df[i, name] - df[i-1, name] 
-    }
-    var <- delta
+    df <- df %>% 
+      group_by(denominazione_regione) %>% 
+      mutate(var = c(var[1], diff(var))) %>% 
+      ungroup()
+
     name <- paste0("variazione_", name)
-  }
+  } 
   
-  # plot 
   p <- df %>% 
-    mutate(var = var) %>% 
-    filter(data >= max(data) - days(last_n_days)) %>% 
-    ggplot(aes(data, var)) +
+    filter(data >= max(data) - days(last_n_days),
+           denominazione_regione %in% regione) %>% 
+    ggplot(aes(data, var, group = denominazione_regione, 
+               color = denominazione_regione)) +
     geom_line() +
     ylab(name)
-  
+ 
+  # show percentages 
   if(percentuale == TRUE) {
     p <- p + scale_y_continuous(labels = scales::percent)
   }
@@ -42,6 +46,15 @@ covid_plot <- function(last_n_days = double(), var = character(),
   p
 }
 
+
+#### tests ####
+#covid_plot(df = df_regioni, last_n_days = 14, var = "totale_positivi", 
+#           variazione = T, percentuale = F, 
+#           regione = c("Lombardia", "Veneto", "Sardegna"))
+#
+#covid_plot(df = df_regioni, last_n_days = 14, var = "ratio_positivi_tamponi", 
+#           variazione = F, percentuale = T, 
+#           regione = c("Lombardia", "Veneto", "Sardegna"))
 
 
 
