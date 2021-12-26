@@ -1,4 +1,4 @@
-# it_covid_dashboard
+# Italy COVID19 Dashboard
 Interactive dashboard for Italian COVID19 data.
 
 This dashboard provides interactive visualizations for Italy's COVID-19 data.
