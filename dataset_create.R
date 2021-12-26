@@ -39,4 +39,4 @@ covid_italy <- full_join(df, df_regioni, by = shared_names)
 
 
 # clean environment
-rm(list = c("url1", "url2", "shared_names"))
+rm(list = c("url1", "url2", "shared_names", "df", "df_regioni"))
