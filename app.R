@@ -9,7 +9,7 @@ regions <- c(NULL, levels(as.factor(covid_italy$denominazione_regione)))
 max_days <- length(seq(min(covid_italy$data), max(covid_italy$data), by = "days"))
 
 selected_names <- names(covid_italy) %in% c("data", "stato", "denominazione_regione", 
-                                           "codice_regione", "lat","long")
+                                           "codice_regione", "lat","long", "ratio_confint_95")
 selected_names <- names(covid_italy)[selected_names == FALSE]
 
 ui <- fluidPage(
