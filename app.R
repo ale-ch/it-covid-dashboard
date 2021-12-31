@@ -1,15 +1,13 @@
 library(shiny)
+library(lubridate)
+library(tidyverse)
 
-source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/dataset_create.R") # read in source code for dataset
-source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/covid_plot.R") # read in source code for helper function
+source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/dataset_create.R")
+source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/covid_plot.R")
 
-# list of italy's regions 
 regions <- c(NULL, levels(as.factor(covid_italy$denominazione_regione)))
-
-# max number of days of data available
 max_days <- length(seq(min(covid_italy$data), max(covid_italy$data), by = "days"))
 
-# selected variables for visualization
 selected_names <- names(covid_italy) %in% c("data", "stato", "denominazione_regione", 
                                            "codice_regione", "lat","long")
 selected_names <- names(covid_italy)[selected_names == FALSE]
@@ -49,19 +47,16 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-    
-  # plot using covid_plot() function
+
     output$plot <- renderPlot({
         covid_plot(df = covid_italy,
                    var = input$variable, 
                    last_n_days = input$last_n_days,
                    variazione = input$variation,
                    percentuale = input$percent, 
-                   regione = input$region
-                   )
+                   regione = input$region)
     })
     
-  # output some statistics in a table
     output$static <- renderDataTable({
       
       covid_italy %>% 
@@ -75,7 +70,8 @@ server <- function(input, output, session) {
           new_infections = nuovi_positivi,
           new_tests = nuovi_tamponi,
           infections_tests_ratio = paste0(as.character(round(
-            ratio_positivi_tamponi * 100), 2),"%"))
+            ratio_positivi_tamponi * 100), 2),"%"),
+          ratio_confint_95 = ratio_confint_95)
     })
 }
 
