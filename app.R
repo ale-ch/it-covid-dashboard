@@ -33,7 +33,7 @@ ui <- fluidPage(
         
         fluidRow(
           column(4, 
-            radioButtons("variation", "Visualize variation:", c(FALSE, TRUE))
+            radioButtons("variation", "Visualize intraday variation:", c(FALSE, TRUE))
           ),
           column(4, 
             radioButtons("percent", "Visualize in percentages:", c(FALSE, TRUE))
