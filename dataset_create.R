@@ -37,6 +37,18 @@ shared_names <- names(df_regioni)[which(names(df_regioni) %in% names(df))]
 
 covid_italy <- full_join(df, df_regioni, by = shared_names)
 
+# 95% confidence interval for proportion of infections over the number of daily tests
+p_hat <- covid_italy$ratio_positivi_tamponi
+n <- covid_italy$nuovi_tamponi
+
+marg_1 <- round(p_hat - qnorm(0.95) * sqrt(p_hat * (1 - p_hat) / n), 5)
+marg_2 <- round(p_hat + qnorm(0.95) * sqrt(p_hat * (1 - p_hat) / n), 5)
+
+ratio_confint_95 <- paste(as.character(marg_1), as.character(marg_2))
+
+covid_italy <- covid_italy %>% 
+  mutate(ratio_confint_95 = ratio_confint_95)
+
 
 # clean environment
-rm(list = c("url1", "url2", "shared_names", "df", "df_regioni"))
+rm(list = c("url1", "url2", "shared_names", "df", "df_regioni", "p_hat", "n", "marg_1", "marg_2", "ratio_confint_95"))
