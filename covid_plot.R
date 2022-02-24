@@ -45,17 +45,3 @@ covid_plot <- function(df = list(), last_n_days = double(),
   
   p
 }
-
-
-#### tests ####
-#covid_plot(df = df_regioni, last_n_days = 14, var = "totale_positivi", 
-#           variazione = T, percentuale = F, 
-#           regione = c("Lombardia", "Veneto", "Sardegna"))
-#
-#covid_plot(df = df_regioni, last_n_days = 14, var = "ratio_positivi_tamponi", 
-#           variazione = F, percentuale = T, 
-#           regione = c("Lombardia", "Veneto", "Sardegna"))
-
-
-
-
