@@ -5,11 +5,10 @@ library(tidyverse)
 source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/dataset_create.R")
 source("https://raw.githubusercontent.com/ale-ch/it_covid_dashboard/main/covid_plot.R")
 
-regions <- c(NULL, levels(as.factor(covid_italy$denominazione_regione)))
-max_days <- length(seq(min(covid_italy$data), max(covid_italy$data), by = "days"))
+regions <- c(NULL, levels(as.factor(covid_italy$region_name)))
+max_days <- length(seq(min(covid_italy$date), max(covid_italy$date), by = "days"))
 
-selected_names <- names(covid_italy) %in% c("data", "stato", "denominazione_regione", 
-                                           "codice_regione", "lat","long", "ratio_confint_95")
+selected_names <- names(covid_italy) %in% c("date", "region_name", "ratio_confint_95")
 selected_names <- names(covid_italy)[selected_names == FALSE]
 
 ui <- fluidPage(
@@ -29,7 +28,7 @@ ui <- fluidPage(
 
         checkboxGroupInput("region", "Select region(s):", regions,
                            inline = TRUE,
-                           selected = "Nazionale"),
+                           selected = "National"),
         
         fluidRow(
           column(4, 
@@ -52,25 +51,25 @@ server <- function(input, output, session) {
         covid_plot(df = covid_italy,
                    var = input$variable, 
                    last_n_days = input$last_n_days,
-                   variazione = input$variation,
-                   percentuale = input$percent, 
-                   regione = input$region)
+                   variation = input$variation,
+                   percentage = input$percent, 
+                   region = input$region)
     })
     
     output$static <- renderDataTable({
       
       covid_italy %>% 
-        group_by(denominazione_regione) %>% 
+        group_by(region_name) %>% 
         filter(
-          data == max(data),
-          denominazione_regione %in% input$region) %>% 
+          date == max(date),
+          region_name %in% input$region) %>% 
         summarise(
-          date = data,
+          date = date,
           Rt = round(Rt, 2),
-          new_infections = nuovi_positivi,
-          new_tests = nuovi_tamponi,
+          new_infections = positives,
+          new_tests = tests,
           infections_tests_ratio = paste0(as.character(round(
-            ratio_positivi_tamponi * 100), 2),"%"),
+            pos_tests_ratio * 100), 2),"%"),
           ratio_confint_95 = ratio_confint_95)
     })
 }
