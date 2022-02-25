@@ -1,11 +1,11 @@
 library(tidyverse)
 library(lubridate)
 
-##### carica dati ####
+##### load data ####
 url1 <- "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv"
 url2 <- "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv"
 
-#### dati nazionali ####
+#### national data ####
 df <- read.csv(url(url1)) %>% 
   select(-c(2, 12, 13, 16:24, totale_casi,
             variazione_totale_positivi, totale_ospedalizzati,
@@ -16,7 +16,7 @@ df <- read.csv(url(url1)) %>%
          Rt = lag(lead(nuovi_positivi)) / lag(nuovi_positivi),
          denominazione_regione = "National")
 
-#### dati regionali ####
+#### regional data ####
 df_regioni <- read.csv(url(url2)) %>% 
   select(
     -c(codice_nuts_1, codice_nuts_2, note_casi, note_test, 
