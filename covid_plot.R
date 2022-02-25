@@ -1,12 +1,12 @@
 covid_plot <- function(df = list(), last_n_days = double(), 
-                       var = character(), variazione = boolean(),
-                       percentuale = boolean(), regione = "Nazionale") {
+                       var = character(), variation = boolean(),
+                       percentage = boolean(), region = "National") {
   library(dplyr)
   library(ggplot2)
   library(lubridate)
   
   #### stopping condition #####
-  max_days <- round(max(df$data) - df$data[1], 0)
+  max_days <- round(max(df$date) - df$date[1], 0)
   
   if(last_n_days > max_days) {
     stop(paste0("Data is only available for the last ", 
@@ -21,25 +21,25 @@ covid_plot <- function(df = list(), last_n_days = double(),
     mutate(var = var)
   
   # show variation: yes/no 
-  if(variazione == TRUE) {
+  if(variation == TRUE) {
     df <- df %>% 
-      group_by(denominazione_regione) %>% 
+      group_by(region_name) %>% 
       mutate(var = c(var[1], diff(var))) %>% 
       ungroup()
 
-    name <- paste0("variazione_", name)
+    name <- paste0("variation_", name)
   } 
   
   p <- df %>% 
-    filter(data >= max(data) - days(last_n_days),
-           denominazione_regione %in% regione) %>% 
-    ggplot(aes(data, var, group = denominazione_regione, 
-               color = denominazione_regione)) +
+    filter(date >= max(date) - days(last_n_days),
+           region_name %in% region) %>% 
+    ggplot(aes(date, var, group = region_name, 
+               color = region_name)) +
     geom_line() +
     ylab(name)
  
   # show percentages 
-  if(percentuale == TRUE) {
+  if(percentage == TRUE) {
     p <- p + scale_y_continuous(labels = scales::percent)
   }
   
