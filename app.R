@@ -12,6 +12,8 @@ selected_names <- names(covid_italy) %in% c("date", "region_name", "ratio_confin
 selected_names <- names(covid_italy)[selected_names == FALSE]
 
 ui <- fluidPage(
+  
+        theme = bslib::bs_theme(bootswatch = "journal"),
 
         titlePanel("Italy Covid Dashboard"),
         
@@ -26,26 +28,40 @@ ui <- fluidPage(
           )
         ),
 
-        checkboxGroupInput("region", "Select region(s):", regions,
-                           inline = TRUE,
-                           selected = "National"),
         
-        fluidRow(
-          column(4, 
-            radioButtons("variation", "Visualize intraday variation:", c(FALSE, TRUE))
+        sidebarLayout(
+          
+          sidebarPanel = sidebarPanel(
+            checkboxGroupInput("region", "Select region(s):", regions,
+                               inline = FALSE,
+                               selected = "National")
+            
           ),
-          column(4, 
-            radioButtons("percent", "Visualize in percentages:", c(FALSE, TRUE))
+          
+          mainPanel = mainPanel(
+            
+            fluidRow(
+              column(4, 
+                     checkboxInput("variation", "Visualize intraday variation:")
+              ),
+              column(4, 
+                     checkboxInput("percent", "Visualize in percentages:")
+              )
+            ),
+            
+            plotOutput("plot", width = "100%"),
+            dataTableOutput("static")
           )
-        ),
+        )
 
-        plotOutput("plot", width = "100%"),
-        dataTableOutput("static")
+        
  
     )
 
 
 server <- function(input, output, session) {
+  
+    thematic::thematic_shiny()
 
     output$plot <- renderPlot({
         covid_plot(df = covid_italy,
